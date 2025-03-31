@@ -21,7 +21,7 @@ Fetches all deribit options contracts of a user specified currency (e.g. BTC), a
 - Verify topic was created `docker exec -it kafka kafka-topics --list --bootstrap-server localhost:9092`
 - For testing, start up a consumer `docker exec -it kafka kafka-console-consumer --bootstrap-server localhost:9092 --topic deribitOrderbook --from-beginning`
 
-## Produce from Deribit
+## Subscribe to Deribit options data and Produce to Kafka
 - In a separate terminal, run `go run main.go`, `-currency` flag can be specified to specify the currency, default: BTC.
 - Observe that messages are produced to the Kafka topic, and are consumed by the consumer in the Kafka terminal.
 
