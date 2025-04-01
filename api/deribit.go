@@ -92,7 +92,6 @@ func BatchSubscribeDeribitContracts(ctx context.Context, wg *sync.WaitGroup, con
 
 	if err := conn.WriteJSON(req); err != nil {
 		log.Println("[BatchSubscribeDeribitContracts] Subscription error:", err)
-		handleReconnection(ctx, contracts, wg)
 		return
 	}
 
