@@ -1,17 +1,14 @@
 package api
 
 import (
+	"OrderBookScraper/kafka"
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
 	"sync"
-	"time"
-
-	"github.com/gorilla/websocket"
-
-	"OrderBookScraper/kafka"
 )
 
 const (
@@ -79,7 +76,6 @@ func BatchSubscribeDeribitContracts(ctx context.Context, wg *sync.WaitGroup, con
 		return
 	}
 	defer conn.Close()
-
 	// Subscribe to batch of contracts
 	req := Request{
 		JSONRPC: "2.0",
@@ -104,8 +100,6 @@ func BatchSubscribeDeribitContracts(ctx context.Context, wg *sync.WaitGroup, con
 			_, msg, err := conn.ReadMessage()
 			if err != nil {
 				log.Println("[BatchSubscribeDeribitContracts] Read error:", err)
-				// Attempt reconnection on failure
-				handleReconnection(ctx, contracts, wg)
 				return
 			}
 
@@ -127,18 +121,4 @@ func createOrderBookChannels(contracts []string) []string {
 		channels = append(channels, "book."+contract+".100ms")
 	}
 	return channels
-}
-
-// handleReconnection Handles reconnection logic for WebSocket subscriptions in case of errors.
-func handleReconnection(ctx context.Context, contracts []string, wg *sync.WaitGroup) {
-	log.Println("[handleReconnection] Attempting to reconnect...")
-	time.Sleep(5 * time.Second) // Exponential backoff could be applied here
-	select {
-	case <-ctx.Done():
-		return
-	default:
-		// Attempt to re-subscribe and re-establish connection
-		wg.Add(1)
-		BatchSubscribeDeribitContracts(ctx, wg, contracts)
-	}
 }
