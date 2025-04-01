@@ -1,14 +1,16 @@
 package api
 
 import (
-	"OrderBookScraper/kafka"
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
 	"sync"
+
+	"github.com/gorilla/websocket"
+
+	"OrderBookScraper/kafka"
 )
 
 const (
